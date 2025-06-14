@@ -19,7 +19,11 @@ export const AuthProvider=({children})=>{
     //check if user is authenticated and if so then set user data and connect the socket
     const checkAuth =async()=>{
         try {
-            const {data} =await axios.get("/api/auth/check");
+            const {data} =await axios.get("/api/auth/check",{
+                headers:{
+                    token: localStorage.getItem("token"),
+                },
+            });
 
             if(data.success){
                 setAuthUser(data.user)
@@ -33,7 +37,9 @@ export const AuthProvider=({children})=>{
     //login function to handle user authentication and socket connection
     const login = async(state, credentials)=>{
         try {
-            const {data} = await axios.post(`api/auth/${state}`, credentials);
+            const {data} = await axios.post(`/api/auth/${state}`, credentials);
+            
+
             if(data.success){
                 setAuthUser(data.userData);
                 connectSocket(data.userData);
@@ -41,10 +47,12 @@ export const AuthProvider=({children})=>{
                 setToken(data.token);
                 localStorage.setItem("token", data.token)
                 toast.success(data.message)
+                
             }
             else{
                 toast.error(data.message)
             }
+            return data;
         } catch (error) {
             toast.error(error.message)
         }
@@ -52,6 +60,7 @@ export const AuthProvider=({children})=>{
 
     //logout function to handle user logout and socket disconnection
     const logout= async()=>{
+        
         localStorage.removeItem("token")
         setToken(null)
         setAuthUser(null)
@@ -75,7 +84,7 @@ export const AuthProvider=({children})=>{
     }
 
     //connect socket function to handle socket connection and online users updates
-    const connectSocket = async(userData)=>{
+    const connectSocket = (userData)=>{
         if(!userData || socket?.connected) return;
         const newSocket = io(backendUrl,{
             query:{
@@ -86,15 +95,13 @@ export const AuthProvider=({children})=>{
         setSocket(newSocket);
 
         newSocket.on("getOnlineUsers", (userIds)=>{
-            setOnlineUsers
+            setOnlineUsers(userIds)
         })
 
     }
 
-
-
-
     useEffect(()=>{
+        const token = localStorage.getItem("token");
         if(token){
             axios.defaults.headers.common["token"] = token;
         }

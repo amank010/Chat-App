@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import assets from '../assets/assets';
 import { authContext } from '../context/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
@@ -11,9 +12,10 @@ const Login = () => {
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setisDataSubmitted] = useState(false);
 
+  const navigate = useNavigate();
   const {login} = useContext(authContext)
 
-  const onSubmitHandler=(e)=>{
+  const onSubmitHandler=async(e)=>{
     e.preventDefault();
 
     if(currState==="Sign Up" && !isDataSubmitted){
@@ -21,7 +23,12 @@ const Login = () => {
       return;
     }
 
-    login(currState === "Sign Up"? "signup" : "login",{fullName, email, password, bio})
+    const result = await login(currState === "Sign Up"? "signup" : "login",{fullName, email, password, bio})
+
+if(result?.success){
+  navigate('/');
+}
+
   }
   
   return (
@@ -69,7 +76,7 @@ const Login = () => {
         </button>
         
         <div className='flex items-center gap-2 text-sm text-gray-500'>
-          <input type="checkbox" name="" id="" required />
+          <input type="checkbox" name="" id="" />
           <p>Agree to the terms of use & privacy policy.</p>
        </div>
 

@@ -9,8 +9,8 @@ const ProfilePage = () => {
 
   const [selectedImg, setSlectedImage] =useState(null);
 
-  const [name, setName] =useState("Alice")
-  const [bio, setBio] =useState("Hi everyone, I'm using ChatApp")
+  const [name, setName] =useState(authUser.fullName)
+  const [bio, setBio] =useState(authUser.bio)
 
   const navigate=useNavigate();
 
@@ -58,7 +58,7 @@ const ProfilePage = () => {
 
             <button type='submit' className='bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-full p-2 cursor-pointer'>Save</button>
         </form>
-        <img className='max-w-44 mx-10 aspect-square  max-sm:mt-10' src={assets.logo_icon} alt="" />
+        <img className={`max-w-44 mx-10 aspect-square rounded-full max-sm:mt-10 ${selectedImg && 'rounded-full'}`} src={authUser?.profilePic || assets.logo_icon} alt="" />
       
       </div>
     </div>
