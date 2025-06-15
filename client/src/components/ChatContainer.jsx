@@ -57,7 +57,7 @@ const ChatContainer = () => {
         <img src={selectedUser.profilePic ||assets.avatar_icon} alt="" className="rounded-full w-8" />
         <p className="text-white flex-1 text-lg flex items-center gap-2">
           {selectedUser.fullName}
-          I
+          
           {onlineUsers.includes(selectedUser._id) &&<span className="w-2 h-2 rounded-full bg-green-400"></span>}
         </p>
         <img className="md:hidden max-w-7" src={assets.arrow_icon} alt="" />
